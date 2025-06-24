@@ -1,50 +1,29 @@
-# Payroll Processing System
+# Payroll Processing System (Laravel)
 
-This project provides a minimal payroll processing system compliant with basic aspects of Mexican Federal Labor Law.
+This repository contains a Laravel-based payroll processing backend with a minimal API.
+The application uses PostgreSQL via Docker Compose and can be extended with a modern frontend using Vite.
 
-## Features
+## Requirements
+- PHP 8.3 or later
+- Composer
+- Docker (for Sail)
 
-- Basic employee payroll calculations including IMSS and INFONAVIT deductions.
-- Placeholder ISR calculation (10% of base salary).
-- Support for overtime, Sunday premium, bonuses and dynamic deductions.
-- Generation of payroll receipts per employee.
-- Export of summarized payroll information to CSV.
-
-## Usage
-
-1. Install Python 3.10 or later.
-2. Install dependencies (none required for base usage).
-3. Run the tests:
+## Running with Sail
+Laravel Sail provides a Docker environment that includes PHP, Nginx and PostgreSQL.
 
 ```bash
-python -m unittest discover
+cd laravel-app
+./vendor/bin/sail up -d
 ```
 
-4. Create a CSV file with employee data and load it:
+The API will be available at `http://localhost` and PostgreSQL will be available on port `5432`.
 
-```python
-from payroll.payroll import Payroll
-payroll = Payroll.from_csv("employees.csv")
-receipts = payroll.generate_receipts()
-for emp_id, text in receipts.items():
-    print(text)
-```
+## API Endpoints
+- `GET /api/employees` – list employees
+- `POST /api/employees` – create an employee (accepts JSON fields: `name`, `daily_salary`, `worked_days`, `overtime_hours`, `sunday_hours`, `bonuses`)
 
-## CSV Format
+These routes are defined in `routes/api.php` and handled by `PayrollController`.
 
-The CSV file must include at least the following columns:
-
-- `id`
-- `name`
-- `daily_salary`
-- `worked_days`
-
-Optional columns:
-
-- `overtime_hours`
-- `sunday_hours`
-- `bonuses`
-
-## Disclaimer
-
-This project is a simplified reference implementation and does not cover all edge cases or legal obligations. Always verify calculations with a payroll specialist.
+## Kubernetes
+For Kubernetes deployments you can build a container image using the Sail Dockerfile
+and create appropriate Deployment and Service manifests pointing to the `laravel.test` service.
